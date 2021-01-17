@@ -1,0 +1,73 @@
+<nav class="navbar navbar-light" style="background-color: #54640ae7; ">
+  <button class="btn btn-dark" (click)="uye? CikisYap(): GirisYap()">{{uye? 'Çıkış Yap': 'Giriş Yap'}}</button>
+  <label class="text-white ml-auto">KARTAL ARAÇ KİRALAMA</label>
+
+  <div class="ml-auto">
+    <label style="color: white; padding-right: 10px">{{uye? uye.mail: ''}}</label>
+
+  </div>
+</nav>
+<div class=" mt-5 ">
+  <div class="row">
+    <div class="{{uye ? 'col-md-8' : 'col-md-12'}}">
+      <h4 class="ml-5">ARAÇLAR</h4>
+      <hr>
+      <table class="table">
+        <thead class="thead-dark ">
+          <th>Resim</th>
+          <th>Marka</th>
+          <th>Fiyat(Gün)</th>
+          <th>Detay</th>
+          <th>İlan Tarihi</th>
+          <th>Güncelleme Tarihi</th>
+          <th>Araç Durumu</th>
+          <th *ngIf="uye">Düzenle</th>
+          <th *ngIf="uye">Sil</th>
+        </thead>
+        <tbody>
+          <tr class="table-light" *ngFor="let kayit of kayitlar">
+            <td><img class="img-fluid" style="max-height: 80px; max-width: 80px" src="{{kayit.resim}}"></td>
+            <td>{{kayit.marka}}</td>
+            <td>{{kayit.fiyat}}₺</td>
+            <td>{{kayit.detay}}</td>
+            <td>{{kayit.ilanTarih | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+            <td>{{kayit.duzTarih | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+            <td><button class="btn btn-outline-primary" [disabled]="kayit.kiraDurum"
+                (click)="Kirala(kayit.kiraDurum, kayit.key)">{{kayit.kiraDurum? 'Kiralandı': 'Kirala'}}</button></td>
+            <td><button class="btn btn-outline-warning" (click)="KayitDuzenle(kayit)" *ngIf="uye">Düzenle</button></td>
+            <td><button class="btn btn-outline-danger" (click)="KayitSil(kayit)" *ngIf="uye">Sil</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="col-md-4" *ngIf="uye">
+      <h4>Kayıt Ekle Düzenle</h4>
+      <hr>
+      <form #frm="ngForm" (submit)="Kaydet()">
+        <div class="form-group">
+          <label>Resim</label>
+          <input id="resim" type='file' accept="image/*" (change)="DosyaSec($event)">
+        </div>
+        <div class="form-group">
+          <label>Marka</label>
+          <input type="text" class="form-control" name="Marka" [(ngModel)]="secKayit.marka" required>
+        </div>
+        <div class="form-group">
+          <label>Fiyat</label>
+          <input type="text" class="form-control" name="fiyat" [(ngModel)]="secKayit.fiyat" required>
+        </div>
+        <div class="form-group">
+          <label>Detay</label>
+          <textarea class="form-control" name="detay" [(ngModel)]="secKayit.detay" required></textarea>
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Kaydet" class="btn btn-outline-success" [disabled]="frm.invalid">
+        </div>
+      </form>
+      <button class="btn btn-outline-danger" (click)="Vazgec()">Vazgeç</button>
+      <div [ngClass]="sonuc.islem ? 'alert alert-success':'alert alert-danger'" *ngIf="sonuc.mesaj?.length>0">
+        {{sonuc.mesaj}}</div>
+    </div>
+  </div>
+</div>
